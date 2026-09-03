@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Smart Hospital Management System</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="hospital-app">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            <div class="logo-icon">❤</div>
+
+            <div>
+                <h2>Hospitalize</h2>
+                <span>Smart Hospital</span>
+            </div>
+        </div>
+
+        <nav>
+
+            <button class="menu active" onclick="showPage('dashboard')">
+                🏠 <span>Overview</span>
+            </button>
+
+            <button class="menu" onclick="showPage('patients')">
+                👤 <span>Patients</span>
+            </button>
+
+            <button class="menu" onclick="showPage('doctors')">
+                👨‍⚕️ <span>Doctors</span>
+            </button>
+
+            <button class="menu" onclick="showPage('beds')">
+                🛏️ <span>Bed Management</span>
+            </button>
+
+            <button class="menu" onclick="showPage('equipment')">
+                ⚙️ <span>Medical Equipment</span>
+            </button>
+
+            <button class="menu" onclick="showPage('appointments')">
+                📅 <span>Appointments</span>
+            </button>
+
+            <button class="menu" onclick="showPage('emergency')">
+                🚨 <span>Emergency</span>
+            </button>
+
+            <button class="menu" onclick="showPage('reports')">
+                📊 <span>Reports</span>
+            </button>
+
+        </nav>
+
+        <button class="logout" onclick="resetSystem()">
+            ↪ Reset System
+        </button>
+
+    </aside>
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <main class="main-content">
+
+        <!-- TOP BAR -->
+
+        <header class="topbar">
+
+            <div class="search-box">
+
+                🔍
+
+                <input
+                    type="text"
+                    id="globalSearch"
+                    placeholder="Search patient, doctor or equipment..."
+                    onkeyup="globalSearch()"
+                >
+
+            </div>
+
+            <div class="admin">
+
+                <span class="notification">🔔</span>
+
+                <div>
+                    <b>Hospital Admin</b>
+                    <small>Administrator</small>
+                </div>
+
+                <div class="profile">
+                    HA
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- ================================================= -->
+        <!-- DASHBOARD -->
+        <!-- ================================================= -->
+
+        <section id="dashboard" class="page active">
+
+            <div class="page-header">
+
+                <div>
+                    <h1>Hospital Overview</h1>
+                    <p>Smart Hospital Patient & Medical Equipment Management</p>
+                </div>
+
+                <button class="primary-btn"
+                        onclick="openPatientForm()">
+                    + Add Patient
+                </button>
+
+            </div>
+
+
+            <!-- STATISTICS -->
+
+            <div class="statistics">
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">👤</div>
+
+                    <p>Total Patients</p>
+
+                    <h2 id="totalPatients">0</h2>
+
+                    <span>Registered patients</span>
+
+                </div>
+
+
+                <div class="stat-card blue">
+
+                    <div class="stat-icon">👨‍⚕️</div>
+
+                    <p>Total Doctors</p>
+
+                    <h2 id="totalDoctors">0</h2>
+
+                    <span>Hospital doctors</span>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">🛏️</div>
+
+                    <p>Total Beds</p>
+
+                    <h2 id="totalBeds">0</h2>
+
+                    <span id="availableBeds">
+                        0 available
+                    </span>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">⚙️</div>
+
+                    <p>Medical Equipment</p>
+
+                    <h2 id="totalEquipment">0</h2>
+
+                    <span id="maintenanceCount">
+                        0 maintenance
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- DASHBOARD CHARTS -->
+
+            <div class="dashboard-grid">
+
+                <!-- APPOINTMENT FLOW -->
+
+                <div class="card">
+
+                    <div class="card-header">
+
+                        <div>
+                            <h3>Appointment Flow</h3>
+                            <p>Live appointment status</p>
+                        </div>
+
+                        <div class="legend">
+
+                            <span class="upcoming">
+                                ● Upcoming
+                            </span>
+
+                            <span class="completed">
+                                ● Completed
+                            </span>
+
+                            <span class="cancelled">
+                                ● Cancelled
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div
+                        class="appointment-chart"
+                        id="appointmentChart">
+                    </div>
+
+                </div>
+
+
+                <!-- WARD OCCUPANCY -->
+
+                <div class="card occupancy-card">
+
+                    <h3>Ward Occupancy</h3>
+
+                    <p>Current bed utilization</p>
+
+                    <div class="donut">
+
+                        <div>
+
+                            <strong id="occupancy">
+                                0%
+                            </strong>
+
+                            <span>Occupied</span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="ward-legend">
+
+                        <span>● General</span>
+                        <span>● ICU</span>
+                        <span>● Emergency</span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- LOWER DASHBOARD -->
+
+            <div class="dashboard-grid lower">
+
+                <div class="card">
+
+                    <div class="card-header">
+
+                        <div>
+                            <h3>Patient Activity</h3>
+                            <p>Recent hospital activity</p>
+                        </div>
+
+                        <select>
+                            <option>This Week</option>
+                            <option>This Month</option>
+                        </select>
+
+                    </div>
+
+                    <div class="activity-chart">
+
+                        <div class="line"></div>
+
+                        <div class="days">
+
+                            <span>Mon</span>
+                            <span>Tue</span>
+                            <span>Wed</span>
+                            <span>Thu</span>
+                            <span>Fri</span>
+                            <span>Sat</span>
+                            <span>Sun</span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- MESSAGES -->
+
+                <div class="card">
+
+                    <div class="card-header">
+
+                        <div>
+                            <h3>Unread Messages</h3>
+                            <p>Hospital communication</p>
+                        </div>
+
+                    </div>
+
+                    <div class="messages">
+
+                        <div class="message">
+
+                            <div class="message-avatar">
+                                DR
+                            </div>
+
+                            <div>
+                                <b>Dr. Arfin</b>
+                                <small>ICU patient update</small>
+                            </div>
+
+                            <span>›</span>
+
+                        </div>
+
+
+                        <div class="message">
+
+                            <div class="message-avatar pink">
+                                RS
+                            </div>
+
+                            <div>
+                                <b>Reception</b>
+                                <small>New appointment</small>
+                            </div>
+
+                            <span>›</span>
+
+                        </div>
+
+
+                        <div class="message">
+
+                            <div class="message-avatar yellow">
+                                EM
+                            </div>
+
+                            <div>
+                                <b>Equipment Team</b>
+                                <small>Maintenance alert</small>
+                            </div>
+
+                            <span>›</span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- QUICK ACTIONS -->
+
+            <div class="card quick-actions">
+
+                <h3>Quick Actions</h3>
+
+                <div>
+
+                    <button onclick="openPatientForm()">
+                        + Register Patient
+                    </button>
+
+                    <button onclick="openAppointmentForm()">
+                        📅 New Appointment
+                    </button>
+
+                    <button onclick="openEquipmentForm()">
+                        ⚙ Add Equipment
+                    </button>
+
+                    <button onclick="showPage('emergency')">
+                        🚨 Emergency Queue
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- PATIENT MANAGEMENT -->
+        <!-- ================================================= -->
+
+        <section id="patients" class="page">
+
+            <div class="page-header">
+
+                <div>
+                    <h1>Patient Management</h1>
+                    <p>Register and manage hospital patients</p>
+                </div>
+
+                <button
+                    class="primary-btn"
+                    onclick="openPatientForm()">
+
+                    + Add Patient
+
+                </button>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="table-tools">
+
+                    <input
+                        type="text"
+                        id="patientSearch"
+                        placeholder="Search patient..."
+                        onkeyup="searchPatients()"
+                    >
+
+                </div>
+
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>ID</th>
+                            <th>Patient</th>
+                            <th>Age</th>
+                            <th>Department</th>
+                            <th>Priority</th>
+                            <th>Status</th>
+                            <th>Action</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="patientTable">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- DOCTORS -->
+        <!-- ================================================= -->
+
+        <section id="doctors" class="page">
+
+            <div class="page-header">
+
+                <div>
+
+                    <h1>Doctor Management</h1>
+
+                    <p>
+                        Monitor doctors and availability
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="doctor-grid"
+                id="doctorGrid">
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- BED MANAGEMENT -->
+        <!-- ================================================= -->
+
+        <section id="beds" class="page">
+
+            <div class="page-header">
+
+                <div>
+
+                    <h1>Bed Management</h1>
+
+                    <p>
+                        Monitor and allocate hospital beds
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="bed-summary"
+                id="bedSummary">
+
+            </div>
+
+
+            <div class="card">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Bed ID</th>
+                            <th>Ward</th>
+                            <th>Type</th>
+                            <th>Patient</th>
+                            <th>Status</th>
+                            <th>Action</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="bedTable">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- EQUIPMENT -->
+        <!-- ================================================= -->
+
+        <section id="equipment" class="page">
+
+            <div class="page-header">
+
+                <div>
+
+                    <h1>Medical Equipment</h1>
+
+                    <p>
+                        Track medical equipment and maintenance
+                    </p>
+
+                </div>
+
+                <button
+                    class="primary-btn"
+                    onclick="openEquipmentForm()">
+
+                    + Add Equipment
+
+                </button>
+
+            </div>
+
+
+            <div
+                class="equipment-grid"
+                id="equipmentGrid">
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- APPOINTMENTS -->
+        <!-- ================================================= -->
+
+        <section id="appointments" class="page">
+
+            <div class="page-header">
+
+                <div>
+
+                    <h1>Appointments</h1>
+
+                    <p>
+                        Schedule and manage appointments
+                    </p>
+
+                </div>
+
+                <button
+                    class="primary-btn"
+                    onclick="openAppointmentForm()">
+
+                    + New Appointment
+
+                </button>
+
+            </div>
+
+
+            <div class="card">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Patient</th>
+                            <th>Doctor</th>
+                            <th>Department</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th>Action</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="appointmentTable">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- EMERGENCY -->
+        <!-- ================================================= -->
+
+        <section id="emergency" class="page">
+
+            <div class="page-header">
+
+                <div>
+
+                    <h1>Emergency Management</h1>
+
+                    <p>
+                        Smart priority-based emergency queue
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="emergency-alert">
+
+                🚨
+                Critical patients are automatically
+                placed at the top of the queue.
+
+            </div>
+
+
+            <div class="card">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Priority</th>
+                            <th>Patient</th>
+                            <th>Department</th>
+                            <th>Waiting Time</th>
+                            <th>Doctor</th>
+                            <th>Action</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="emergencyTable">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- REPORTS -->
+        <!-- ================================================= -->
+
+        <section id="reports" class="page">
+
+            <div class="page-header">
+
+                <div>
+
+                    <h1>Reports & Analytics</h1>
+
+                    <p>
+                        Hospital performance analysis
+                    </p>
+
+                </div>
+
+                <button
+                    class="primary-btn"
+                    onclick="downloadReport()">
+
+                    Download Report
+
+                </button>
+
+            </div>
+
+
+            <div class="report-grid">
+
+                <div class="report-card">
+
+                    <span>Total Patients</span>
+
+                    <strong id="reportPatients">
+                        0
+                    </strong>
+
+                </div>
+
+
+                <div class="report-card">
+
+                    <span>Bed Occupancy</span>
+
+                    <strong id="reportBeds">
+                        0%
+                    </strong>
+
+                </div>
+
+
+                <div class="report-card">
+
+                    <span>Equipment Ready</span>
+
+                    <strong id="reportEquipment">
+                        0%
+                    </strong>
+
+                </div>
+
+
+                <div class="report-card">
+
+                    <span>Emergency Cases</span>
+
+                    <strong id="reportEmergency">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- WORKING PROCESS -->
+
+            <div class="card process-card">
+
+                <h3>Smart Hospital Allocation Process</h3>
+
+                <div class="process">
+
+                    <div>
+                        <b>1</b>
+                        <span>Patient Registration</span>
+                    </div>
+
+                    <i>→</i>
+
+                    <div>
+                        <b>2</b>
+                        <span>Priority Checking</span>
+                    </div>
+
+                    <i>→</i>
+
+                    <div>
+                        <b>3</b>
+                        <span>Bed Allocation</span>
+                    </div>
+
+                    <i>→</i>
+
+                    <div>
+                        <b>4</b>
+                        <span>Equipment Allocation</span>
+                    </div>
+
+                    <i>→</i>
+
+                    <div>
+                        <b>5</b>
+                        <span>Doctor Assignment</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- PATIENT MODAL -->
+<!-- ================================================= -->
+
+<div class="modal" id="patientModal">
+
+    <div class="modal-box">
+
+        <button
+            class="close"
+            onclick="closeModal('patientModal')">
+            ×
+        </button>
+
+        <h2>Register Patient</h2>
+
+        <form id="patientForm">
+
+            <label>
+                Patient Name
+                <input
+                    type="text"
+                    name="name"
+                    required
+                >
+            </label>
+
+
+            <label>
+                Age
+                <input
+                    type="number"
+                    name="age"
+                    min="0"
+                    max="120"
+                    required
+                >
+            </label>
+
+
+            <label>
+                Department
+
+                <select name="department">
+
+                    <option>Cardiology</option>
+                    <option>Neurology</option>
+                    <option>Gynaecology</option>
+                    <option>General</option>
+                    <option>Emergency</option>
+                    <option>ICU</option>
+
+                </select>
+
+            </label>
+
+
+            <label>
+                Priority
+
+                <select name="priority">
+
+                    <option>Normal</option>
+                    <option>High</option>
+                    <option>Critical</option>
+
+                </select>
+
+            </label>
+
+
+            <button
+                type="submit"
+                class="primary-btn full">
+
+                Register Patient
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- EQUIPMENT MODAL -->
+<!-- ================================================= -->
+
+<div class="modal" id="equipmentModal">
+
+    <div class="modal-box">
+
+        <button
+            class="close"
+            onclick="closeModal('equipmentModal')">
+            ×
+        </button>
+
+        <h2>Add Medical Equipment</h2>
+
+        <form id="equipmentForm">
+
+            <label>
+                Equipment Name
+
+                <input
+                    type="text"
+                    name="name"
+                    required
+                >
+
+            </label>
+
+
+            <label>
+                Category
+
+                <select name="category">
+
+                    <option>Monitoring</option>
+                    <option>Ventilator</option>
+                    <option>Imaging</option>
+                    <option>Surgical</option>
+                    <option>Laboratory</option>
+
+                </select>
+
+            </label>
+
+
+            <label>
+                Department
+
+                <input
+                    type="text"
+                    name="department"
+                    required
+                >
+
+            </label>
+
+
+            <label>
+                Status
+
+                <select name="status">
+
+                    <option>Available</option>
+                    <option>In Use</option>
+                    <option>Maintenance</option>
+
+                </select>
+
+            </label>
+
+
+            <button
+                type="submit"
+                class="primary-btn full">
+
+                Add Equipment
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- ================================================= -->
+<!-- APPOINTMENT MODAL -->
+<!-- ================================================= -->
+
+<div class="modal" id="appointmentModal">
+
+    <div class="modal-box">
+
+        <button
+            class="close"
+            onclick="closeModal('appointmentModal')">
+            ×
+        </button>
+
+        <h2>New Appointment</h2>
+
+        <form id="appointmentForm">
+
+            <label>
+                Patient
+
+                <select
+                    name="patient"
+                    id="appointmentPatient">
+                </select>
+
+            </label>
+
+
+            <label>
+                Doctor
+
+                <select
+                    name="doctor"
+                    id="appointmentDoctor">
+                </select>
+
+            </label>
+
+
+            <label>
+                Date
+
+                <input
+                    type="date"
+                    name="date"
+                    required
+                >
+
+            </label>
+
+
+            <label>
+                Time
+
+                <input
+                    type="time"
+                    name="time"
+                    required
+                >
+
+            </label>
+
+
+            <button
+                type="submit"
+                class="primary-btn full">
+
+                Create Appointment
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- TOAST MESSAGE -->
+
+<div id="toast"></div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
